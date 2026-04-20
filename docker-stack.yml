@@ -1,0 +1,140 @@
+version: "3.8"
+
+services:
+
+  eureka:
+    image: eureka-service
+    ports:
+      - "8761:8761"
+    networks:
+      - micro-net
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  config:
+    image: config-service
+    ports:
+      - "8888:8888"
+    networks:
+      - micro-net
+    depends_on:
+      - eureka
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: Microservices
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: TIGER
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - micro-net
+
+  gateway:
+    image: gateway-service
+    ports:
+      - "8088:8088"
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8761/eureka/
+    networks:
+      - micro-net
+    depends_on:
+      - config
+      - eureka
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+  product:
+    image: product-service
+    networks:
+      - micro-net
+    depends_on:
+      - config
+      - eureka
+      - postgres
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  cart:
+    image: cart-service
+    networks:
+      - micro-net
+    depends_on:
+      - config
+      - eureka
+      - postgres
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  inventory:
+    image: inventory-service
+    networks:
+      - micro-net
+    depends_on:
+      - config
+      - eureka
+      - postgres
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  price:
+    image: price-service
+    networks:
+      - micro-net
+    depends_on:
+      - config
+      - eureka
+      - postgres
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  catalog:
+    image: catalog-service
+    networks:
+      - micro-net
+    depends_on:
+      - config
+      - eureka
+      - postgres
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  recommendation:
+    image: recommendation-service
+    networks:
+      - micro-net
+    depends_on:
+      - config
+      - eureka
+      - postgres
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+networks:
+  micro-net:
+    driver: overlay
+
+volumes:
+  pgdata:

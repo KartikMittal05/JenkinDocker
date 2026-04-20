@@ -1,0 +1,12 @@
+spring.application.name=Product
+
+
+spring.datasource.url=jdbc:postgresql://localhost:5432/Microservices
+spring.datasource.username=postgres
+spring.datasource.password=TIGER
+
+spring.jpa.show-sql=true
+spring.jpa.hibernate.ddl-auto=update
+
+server.port=8081
+eureka.client.service-url.defaultZone=http://localhost:8761/eureka/

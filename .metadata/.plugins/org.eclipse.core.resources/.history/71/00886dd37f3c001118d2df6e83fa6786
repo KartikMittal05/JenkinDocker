@@ -1,0 +1,10 @@
+FROM eclipse-temurin:21-jdk
+
+WORKDIR /app
+
+# Copy built jar from builder stage
+COPY /target/*.jar app.jar
+
+Expose 8088
+
+CMD ["java","-jar","app.jar"]
